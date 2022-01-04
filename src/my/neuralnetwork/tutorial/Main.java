@@ -1,9 +1,12 @@
 package my.neuralnetwork.tutorial;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Main {
+
+    private static final DecimalFormat df = new DecimalFormat("##.####");
 
     public static void main(String[] args) {
         NeuralNetwork neuralNetwork = new NeuralNetwork(2, 2, 2);
@@ -24,10 +27,10 @@ public class Main {
     private static void calculateAndPrintResults(List<Double> inputParameters, NeuralNetwork neuralNetwork) {
         List<Double> resultValues = neuralNetwork.calculateOutputs(inputParameters);
 
-        String inputParamsText = inputParameters.stream().map(d -> String.valueOf(d)).collect(Collectors.joining(", "));
+        String inputParamsText = inputParameters.stream().map(d -> df.format(d)).collect(Collectors.joining(", "));
         System.out.println("- Input parameters: " + inputParamsText);
 
-        String resultValuesText = resultValues.stream().map(d -> String.valueOf(d)).collect(Collectors.joining(", "));
+        String resultValuesText = resultValues.stream().map(d -> df.format(d)).collect(Collectors.joining(", "));
         System.out.println("- Result values: " + resultValuesText);
     }
 }
