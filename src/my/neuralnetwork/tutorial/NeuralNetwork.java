@@ -26,7 +26,7 @@ public class NeuralNetwork {
         }
 
         for (int i = 1; i <= outputCount; i++) {
-            Neuron output = new Neuron("output" + i, random.nextDouble() - 0.5);
+            Neuron output = new Neuron("output" + i, random.nextDouble() - 0.5, true);
             for (Neuron hidden : hiddenLayer) {
                 Connection.connect(hidden, output);
             }
@@ -50,6 +50,28 @@ public class NeuralNetwork {
         }
 
         return resultValues;
+    }
+
+    public void train(List<Double> inputValues, List<Double> expectedValues) {
+        for (int i = 0; i < inputValues.size(); i++) {
+            inputLayer.get(i).setOutputValue(inputValues.get(i));
+        }
+
+        for (int i = 0; i < expectedValues.size(); i++) {
+            outputLayer.get(i).setTarget(expectedValues.get(i));
+        }
+
+        // forward propagation
+        for (Neuron hiddenNeuron : hiddenLayer) hiddenNeuron.calculateOutputValue();
+        for (Neuron outputNeuron : outputLayer) outputNeuron.calculateOutputValue();
+
+        // back propagation
+        for (Neuron outputNeuron : outputLayer) outputNeuron.computeWeightAdjustment();
+        for (Neuron hiddenNeuron : hiddenLayer) hiddenNeuron.computeWeightAdjustment();
+
+        // apply weight changes
+        for (Neuron hiddenNeuron : hiddenLayer) hiddenNeuron.applyPendingChangesToWeights();
+        for (Neuron outputNeuron : outputLayer) outputNeuron.applyPendingChangesToWeights();
     }
 
     public void printNetwork() {
