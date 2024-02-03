@@ -74,6 +74,30 @@ public class NeuralNetwork {
         for (Neuron outputNeuron : outputLayer) outputNeuron.applyPendingChangesToWeights();
     }
 
+    public void trainInBatches(List<InputOutputPair> batch) {
+        for (InputOutputPair pair : batch) {
+            for (int i = 0; i < pair.getInputs().size(); i++) {
+                inputLayer.get(i).setOutputValue(pair.getInputs().get(i));
+            }
+
+            for (int i = 0; i < pair.getExpectedOutputs().size(); i++) {
+                outputLayer.get(i).setTarget(pair.getExpectedOutputs().get(i));
+            }
+
+            // forward propagation
+            for (Neuron hiddenNeuron : hiddenLayer) hiddenNeuron.calculateOutputValue();
+            for (Neuron outputNeuron : outputLayer) outputNeuron.calculateOutputValue();
+
+            // back propagation
+            for (Neuron outputNeuron : outputLayer) outputNeuron.computeWeightAdjustment();
+            for (Neuron hiddenNeuron : hiddenLayer) hiddenNeuron.computeWeightAdjustment();
+        }
+
+        // apply weight changes
+        for (Neuron hiddenNeuron : hiddenLayer) hiddenNeuron.applyPendingChangesToWeights();
+        for (Neuron outputNeuron : outputLayer) outputNeuron.applyPendingChangesToWeights();
+    }
+
     public void printNetwork() {
         System.out.println("Hidden layer:");
         for (Neuron hiddenNeuron : hiddenLayer) {

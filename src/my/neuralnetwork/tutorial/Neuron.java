@@ -46,7 +46,7 @@ public class Neuron {
                 double dOutputActivation = outputValue * (1 - outputValue);
                 double dWeight = connection.getFrom().getOutputValue();
                 double weightAdjustment = dErrorOutput * dOutputActivation * dWeight;
-                connection.setPendingAdjustment(weightAdjustment);
+                connection.addPendingAdjustment(weightAdjustment);
             }
         } else {
             for (Connection inCon : incomingConnections) {
@@ -62,14 +62,14 @@ public class Neuron {
                 double dOutputActivationH = outputValue * (1 - outputValue);
                 double dWeight = inCon.getFrom().getOutputValue();
                 double weightAdjustment = dTotalError * dOutputActivationH * dWeight;
-                inCon.setPendingAdjustment(weightAdjustment);
+                inCon.addPendingAdjustment(weightAdjustment);
             }
         }
     }
 
     public void applyPendingChangesToWeights() {
         for (Connection connection : incomingConnections) {
-            connection.applyPendingAdjustment();
+            connection.applyPendingAdjustments();
         }
     }
 
